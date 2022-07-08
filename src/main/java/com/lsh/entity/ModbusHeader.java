@@ -21,7 +21,7 @@ public class ModbusHeader {
     public ModbusHeader(int transactionIdentifier, int protocolIdentifier, int pduLength, short unitIdentifier) {
         this.transactionIdentifier = transactionIdentifier;
         this.protocolIdentifier = protocolIdentifier;
-        this.length = pduLength + 1;
+        this.length = pduLength; // 不能在这里 + 1，否则会导致decode的是时候长度不对，因为MBAP中的length已经包含了Unit Identifier;
         this.unitIdentifier = unitIdentifier;
     }
 

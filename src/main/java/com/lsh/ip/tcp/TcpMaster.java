@@ -21,7 +21,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -54,6 +53,12 @@ public class TcpMaster extends ModbusMaster {
         this.ipParameters = ipParameters;
         this.keepAlive = keepAlive;
     }
+    
+    public TcpMaster(IpParameters ipParameters, short slaveId, boolean keepAlive) {
+        this.ipParameters = ipParameters;
+        this.unitIdentifier = slaveId;
+        this.keepAlive = keepAlive;
+    }
 
     @Override
     public ModbusResponse sendImpl(ModbusRequest request) throws ModbusTransportException {
@@ -63,7 +68,7 @@ public class TcpMaster extends ModbusMaster {
                 }
 
                 if(channel == null){
-                    log.debug("Connection null: " +  ipParameters.getPort());
+                    // log.debug("Connection null: " +  ipParameters.getPort());
                 }
 
             } catch (ModbusInitException e) {
@@ -71,7 +76,7 @@ public class TcpMaster extends ModbusMaster {
             }
 
         try {
-            return callModbusMessageSync(request);
+            return (ModbusResponse) callModbusMessageSync(request).getMessage();
         } catch (ConnectionException e) {
             e.printStackTrace();
         } catch (ErrorResponseException e) {
@@ -117,7 +122,7 @@ public class TcpMaster extends ModbusMaster {
         }
     }
 
-    public <V extends ModbusResponse> V callModbusMessageSync(ModbusMessage message) throws ConnectionException, ErrorResponseException, NoResponseException {
+    public ModbusFrame callModbusMessageSync(ModbusMessage message) throws ConnectionException, ErrorResponseException, NoResponseException {
         //获取事务处理标识
         int transactionId = callModbusMessage(message);
         ModbusResponseHandler handler =(ModbusResponseHandler) channel.pipeline().get("responseHandler");
@@ -125,7 +130,7 @@ public class TcpMaster extends ModbusMaster {
             throw new ConnectionException("Not connected!");
         }
 
-        return (V)handler.getResponse(transactionId).getMessage();
+        return handler.getResponse(transactionId);
 
     }
 
@@ -136,7 +141,7 @@ public class TcpMaster extends ModbusMaster {
         int transactionId = calculateTransactionIdentifier();
         //获取此功能码的pdu长度()
         int pduLength = message.calculateLength();
-        ModbusHeader header = new ModbusHeader(transactionId, protocolIdentifier, pduLength, unitIdentifier);
+        ModbusHeader header = new ModbusHeader(transactionId, protocolIdentifier, pduLength + 1, unitIdentifier);
         ModbusFrame frame = new ModbusFrame(header, message);
         channel.writeAndFlush(frame);
         return transactionId;

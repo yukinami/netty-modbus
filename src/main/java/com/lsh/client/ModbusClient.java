@@ -124,7 +124,7 @@ public class ModbusClient {
         int transactionId = calculateTransactionIdentifier();
         //获取此功能码的pdu长度()
         int pduLength = modbusMessage.calculateLength();
-        ModbusHeader header = new ModbusHeader(transactionId, protocolIdentifier, pduLength, unitIdentifier);
+        ModbusHeader header = new ModbusHeader(transactionId, protocolIdentifier, pduLength + 1, unitIdentifier);
         ModbusFrame frame = new ModbusFrame(header, modbusMessage);
         channel.writeAndFlush(frame);
         return transactionId;

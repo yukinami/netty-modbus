@@ -16,5 +16,9 @@ public class ModbusFactory {
         return new TcpMaster(params, keepAlive);
     }
 
+    public ModbusMaster createTcpMaster(IpParameters params, short slaveId, boolean keepAlive) {
+        return new TcpMaster(params, slaveId, keepAlive);
+    }
+
 
 }

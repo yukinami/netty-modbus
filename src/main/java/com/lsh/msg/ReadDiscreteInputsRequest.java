@@ -1,5 +1,7 @@
 package com.lsh.msg;
 
+import com.lsh.code.FunctionCode;
+
 /**
  * @ClassName ReadDiscreteInputsRequest
  * @Description: TODO
@@ -7,15 +9,15 @@ package com.lsh.msg;
  * @Date 2019/4/23 15:50
  * @Version
  */
-public class ReadDiscreteInputsRequest extends ReadNumericRequest {
+public class ReadDiscreteInputsRequest extends ModbusRequest {
 
 
     public ReadDiscreteInputsRequest(short functionCode) {
-        super(functionCode);
+        super(FunctionCode.READ_DISCRETE_INPUTS);
     }
 
     public ReadDiscreteInputsRequest(short functionCode, int startOffset, int numberOfRegisters) {
-        super(functionCode, startOffset, numberOfRegisters);
+        super(FunctionCode.READ_DISCRETE_INPUTS, startOffset, numberOfRegisters);
 
     }
 }

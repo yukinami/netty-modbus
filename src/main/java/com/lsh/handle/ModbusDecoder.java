@@ -5,7 +5,11 @@ import com.lsh.entity.ModbusFunction;
 import com.lsh.entity.ModbusHeader;
 import com.lsh.entity.func.ModbusError;
 import com.lsh.msg.ModbusMessage;
+import com.lsh.msg.ReadHoldingRegistersRequest;
 import com.lsh.msg.ReadHoldingRegistersResponse;
+import com.lsh.msg.ReadNumericRequest;
+import com.lsh.msg.ReadNumericResponse;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -41,7 +45,13 @@ public class ModbusDecoder extends ByteToMessageDecoder {
         ModbusMessage message = null;
         switch (functionCode) {
             case ModbusFunction.READ_HOLDING_REGISTERS:
-                message = new ReadHoldingRegistersResponse();
+                message = serverMode ? new ReadHoldingRegistersRequest() : new ReadHoldingRegistersResponse(); 
+                break;
+            case ModbusFunction.READ_COILS:
+                message = serverMode ? new ReadNumericRequest() : new ReadNumericResponse(); 
+                break;
+            default:
+                message = serverMode ? new ReadHoldingRegistersRequest() : new ReadHoldingRegistersResponse();
         }
 
         if (ModbusFunction.isError(functionCode)) {

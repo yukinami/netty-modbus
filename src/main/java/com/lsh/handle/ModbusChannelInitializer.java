@@ -51,7 +51,6 @@ public class ModbusChannelInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast("responseHandler", new ModbusResponseHandler() {
             @Override
             public void newResponse(ModbusFrame frame) {
-                System.out.println("11111111111111");
             }
         });
 

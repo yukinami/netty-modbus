@@ -10,9 +10,9 @@ import com.lsh.entity.exception.ModbusTransportException;
  * @Date 2019/4/20 20:53
  * @Version
  */
-public class ReadHoldingRegistersRequest extends ReadNumericRequest{
+public class ReadHoldingRegistersRequest extends ModbusRequest{
 
-    public ReadHoldingRegistersRequest(short functionCode) {
+    public ReadHoldingRegistersRequest() {
         super(FunctionCode.READ_HOLDING_REGISTERS);
     }
 
